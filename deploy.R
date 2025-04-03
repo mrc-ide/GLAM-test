@@ -1,16 +1,17 @@
-# first time installation for testing
-devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
-
 # deploy.R
 #
-# Author: Bob Verity
+# Author: Bob Verity & Gina Cuomo-Dannenburg
 # Date: 2025-04-03
 #
 # Purpose:
-# Sandbox for GLAM package.
-#
+# Sandbox for GLAM package. Consistent with the code in GLAM/R_ignore
+# 
 # ------------------------------------------------------------------
 
+# installation for testing of specified version of {GLAM}
+devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
+
+library(GLAM)
 set.seed(2)
 
 # -----------------------
