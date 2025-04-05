@@ -9,7 +9,7 @@
 # ------------------------------------------------------------------
 
 # installation for testing of specified version of {GLAM}
-devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
+# devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
 
 library(GLAM)
 set.seed(2)

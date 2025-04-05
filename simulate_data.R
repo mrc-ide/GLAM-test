@@ -10,7 +10,14 @@
 # Initial thoughts:
 # - Cohorts with the same # total infections
 #     * Does the MCMC accurately fit the timing of infections?
-#     * Are there issues with saturations with higher #s of infections?
+#     * Are there issues with saturation at higher #s of infections?
 # - Low and high transmission 
-#     * Is there identifiability issues at high and low lambda?
+#     * Is there and issue identifying specific parameters at high and low lambda?
 # - Fixing individual level parameters and ability to fit global parameters
+# - Inconsistent sampling time
+# - Scalability with # of haplotypes
+# - Frequency of specific haplotypes
+# - Collinearity between specific parameters where they are likely to create a 
+#   gradient given the likelihood and other factors? (~ shape and scale in some 
+#   distributions)
+
