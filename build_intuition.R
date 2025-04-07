@@ -331,3 +331,86 @@ plot_ind(sim3)
 
 # a little confused by the relationship between theta and decay rate
 # very low decay ~ high theta --> I guess that makes sense but discuss with Bob
+
+#return to default
+decay_rate <- 0.1
+
+# explore sensitivity
+sens <- 1
+
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim1)
+
+sens <- 0.8
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim2)
+
+sens <- 0.5
+sim3 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim3)
+
+# lower the sensitivity, the higher the probability of an unobserved infection
+# at two separate time points and therefore higher chance of it being estimated as 
+# a new infection
+
+# raises a question around whether sensitivity should be fixed and therefore can
+# we leverage probability that the disappearance and return of an infection is 
+# due to unobserved data vs decay and reinfection
+
+# return to default
+sens <- 0.9
+
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 1)
+plot_ind(sim1)
+
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 2)
+plot_ind(sim2)
+
+sim3 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 10)
+plot_ind(sim3)
+
+# can't figure out if there is a trade off between n_inf and the # of haplotypes
+# introduced at each infection on average but also don't know how to systematically
+# pull that information out
