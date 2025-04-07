@@ -225,3 +225,109 @@ lambda_summary <- lambda_inf |>
 ggplot(lambda_summary, aes(x = lambda, y = median)) +
   geom_point() +
   geom_errorbar(aes(ymin = lower, ymax = upper)) + theme_bw()
+
+max(lambda_inf$n_inf)
+# maximum # infections > max time at high FOI
+
+# fit a linear model
+lm_lambda <- lm(median ~ lambda, data = lambda_summary)
+summary(lm_lambda)
+lm_upper <- lm(upper ~ lambda, data = lambda_summary)
+lm_lower <- lm(lower ~ lambda, data = lambda_summary)
+
+# interesting -- could we use relationship between n_inf ~ lambda to help
+# with identifiability issues?
+ggplot(lambda_summary, aes(x = lambda, y = median)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper)) + theme_bw() +
+  geom_abline(slope = lm_lambda$coefficients[2],
+              intercept = lm_lambda$coefficients[1],
+              lwd = 1, lty = 4, col = "blue") + 
+  geom_abline(slope = lm_upper$coefficients[2],
+              intercept = lm_upper$coefficients[1],
+              lwd = 1, lty = 4, col = "blue") + 
+  geom_abline(slope = lm_lower$coefficients[2],
+              intercept = lm_lower$coefficients[1],
+              lwd = 1, lty = 4, col = "blue")
+
+# return to default values
+lambda <- 0.2
+samp_time <- seq(0, 10, 1)
+theta <- 2
+# theta = COI intensity parameter 
+
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 3)
+plot_ind(sim1)
+
+theta <- 0.5
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 3)
+plot_ind(sim2)
+
+
+theta <- 20
+sim3 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 3)
+plot_ind(sim3)
+
+# higher theta, higher likelihood of multiple haplotypes being introduced simultaneously
+# a little confused because this doesn't actually change COI because we have the same number
+# of simultaneous infections
+
+theta <- 2
+
+# explore decay rate 
+decay_rate <- 0.01
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim1)
+
+decay_rate <- 0.1
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim2)
+
+decay_rate <- 0.5
+sim3 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = NULL)
+plot_ind(sim3)
+
+# a little confused by the relationship between theta and decay rate
+# very low decay ~ high theta --> I guess that makes sense but discuss with Bob
