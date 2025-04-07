@@ -45,7 +45,7 @@ max_infections <- 20
 # simple example but scalable
 cohort_size <- 10
 max_time <- 10
-n_inf <- 1:10
+n_inf <- 1:20
 
 for(i in n_inf) {
   print(paste0("Simulate cohort with ", i, " infections"))
@@ -61,4 +61,6 @@ for(i in n_inf) {
                     return_full = TRUE)
   
   assign(paste0("n_",i), sim)
+  saveRDS(sim, paste0("simulated_data/cohort_n_infections/cohort_",i,"_infections.RDS"))
 }
+
