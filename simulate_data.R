@@ -21,3 +21,44 @@
 #   gradient given the likelihood and other factors? (~ shape and scale in some 
 #   distributions)
 
+# installation for testing of specified version of {GLAM}
+# devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
+
+library(GLAM)
+set.seed(2)
+
+# -----------------------
+# SIMULATE DATA
+
+# set simulation parameters
+samp_time <- seq(0, 10, 1)
+haplo_freqs <- rep(0.05, 20)
+lambda <- 0.2
+theta <- 2
+decay_rate <- 0.1
+sens <- 0.9
+max_infections <- 20
+
+# cohorts with n_inf equal - use the relationship between lambda and median n_inf
+# from build_intuition.R: median(n_inf) ~ max(samp_time) * lambda
+
+# simple example but scalable
+cohort_size <- 10
+max_time <- 10
+n_inf <- 1:10
+
+for(i in n_inf) {
+  print(paste0("Simulate cohort with ", i, " infections"))
+  samp_time <- seq(0, max_time, 1)
+  sim <- sim_cohort(n = cohort_size,
+                    samp_time = samp_time,
+                    haplo_freqs = haplo_freqs,
+                    lambda = i/max_time,
+                    theta = theta,
+                    decay_rate = decay_rate,
+                    sens = sens,
+                    n_inf = rep(i, cohort_size),
+                    return_full = TRUE)
+  
+  assign(paste0("n_",i), sim)
+}

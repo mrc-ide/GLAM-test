@@ -254,6 +254,50 @@ ggplot(lambda_summary, aes(x = lambda, y = median)) +
 lambda <- 0.2
 samp_time <- seq(0, 10, 1)
 theta <- 2
+
+# defining lambda and n_inf together - do weird things happen if the n_inf
+# doesn't make sense within the context of lambda?
+
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 1)
+plot_ind(sim1)
+
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = lambda,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 5)
+plot_ind(sim2)
+
+sim3 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = 5/10,
+                theta = theta, 
+                decay_rate = decay_rate,
+                sens = sens,
+                return_full = TRUE,
+                n_inf = 5)
+plot_ind(sim3)
+
+
+
+
+
+
+
+
+
+
+
 # theta = COI intensity parameter 
 
 sim1 <- sim_ind(samp_time = samp_time,
@@ -414,3 +458,28 @@ plot_ind(sim3)
 # can't figure out if there is a trade off between n_inf and the # of haplotypes
 # introduced at each infection on average but also don't know how to systematically
 # pull that information out
+
+i <- 1
+sim1 <- sim_ind(samp_time = samp_time,
+               haplo_freqs = haplo_freqs,
+               lambda = 0.5,
+               theta = theta,
+               decay_rate = decay_rate,
+               sens = sens,
+               n_inf = i,
+               return_full = TRUE)
+plot_ind(sim1)
+
+
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = i/max(samp_time),
+                theta = theta,
+                decay_rate = decay_rate,
+                sens = sens,
+                n_inf = i,
+                return_full = TRUE)
+plot_ind(sim2)
+
+# when lambda >>> n_inf/max_time, it ends up introducing more genetic material
+# with each infection
