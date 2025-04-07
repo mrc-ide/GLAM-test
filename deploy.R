@@ -46,7 +46,7 @@ sim2 <- sim_cohort(n = cohort_size,
                    theta = theta,
                    decay_rate = decay_rate,
                    sens = sens,
-                   n_inf = NULL,
+                   n_inf = 1,
                    return_full = TRUE)
 
 # -----------------------
@@ -72,10 +72,10 @@ g$init(start_time = 0,
        chains = 1, rungs = 1)
 
 # run burn-in and sampling
-g$burn(iterations = 1e2) |>
+g$burn(iterations = 1e3) |>
   system.time()
 
-g$sample(iterations = 1e3) |>
+g$sample(iterations = 5e3) |>
   system.time()
 
 # -----------------------

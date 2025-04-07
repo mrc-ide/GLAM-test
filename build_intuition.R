@@ -461,13 +461,13 @@ plot_ind(sim3)
 
 i <- 1
 sim1 <- sim_ind(samp_time = samp_time,
-               haplo_freqs = haplo_freqs,
-               lambda = 0.5,
-               theta = theta,
-               decay_rate = decay_rate,
-               sens = sens,
-               n_inf = i,
-               return_full = TRUE)
+                haplo_freqs = haplo_freqs,
+                lambda = 0.5,
+                theta = theta,
+                decay_rate = decay_rate,
+                sens = sens,
+                n_inf = i,
+                return_full = TRUE)
 plot_ind(sim1)
 
 
@@ -483,3 +483,38 @@ plot_ind(sim2)
 
 # when lambda >>> n_inf/max_time, it ends up introducing more genetic material
 # with each infection
+
+# lambda ~ n_inf
+i <- 20
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = i/max(samp_time),
+                theta = theta,
+                decay_rate = decay_rate,
+                sens = sens,
+                n_inf = i,
+                return_full = TRUE)
+plot_ind(sim1)
+
+sim2 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = 0.2,
+                theta = 5,
+                decay_rate = decay_rate,
+                sens = sens,
+                n_inf = i,
+                return_full = TRUE)
+plot_ind(sim2)
+
+# MCMC doesn't even fit infection time with 1 infection
+# is it obvious by human eye?!
+
+sim1 <- sim_ind(samp_time = samp_time,
+                haplo_freqs = haplo_freqs,
+                lambda = 1/max(samp_time),
+                theta = 5,
+                decay_rate = decay_rate,
+                sens = sens,
+                n_inf = 1,
+                return_full = TRUE)
+plot_ind(sim1)
