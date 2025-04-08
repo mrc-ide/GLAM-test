@@ -64,3 +64,28 @@ for(i in n_inf) {
   saveRDS(sim, paste0("simulated_data/cohort_n_infections/cohort_",i,"_infections.RDS"))
 }
 
+# plot_ind(filter_cohort(n_1, 5))
+
+n_inf <- 1:5
+sens_vec <- seq(0.8, 1, by = 0.05)
+for(i in n_inf) {
+  for(j in sens_vec) {  
+    print(paste0("Simulate cohort with ", i, " infections and ", j, " sensitivity"))
+    samp_time <- seq(0, max_time, 1)
+    sim <- sim_cohort(n = cohort_size,
+                      samp_time = samp_time,
+                      haplo_freqs = haplo_freqs,
+                      lambda = i/max_time,
+                      theta = theta,
+                      decay_rate = decay_rate,
+                      sens = j,
+                      n_inf = rep(i, cohort_size),
+                      return_full = TRUE)
+    
+    # save so easily accessible in the local environment
+    assign(paste0("n_",i,"_",j), sim)
+    saveRDS(sim, paste0("simulated_data/sensitivity/cohort_",i,"_inf_",j,"_sens.RDS"))
+  }
+}
+
+
