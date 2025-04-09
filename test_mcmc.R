@@ -343,3 +343,19 @@ plot_ind(filter_cohort(sim_2_3.5, 8)) + theme(legend.position = "bottom")
 #   the value of lambda i.e. transmission intensity. 
 #   i.e. in this last example, you could estimate potentially 5/6 distinct infections based on what 
 #   the MCMC 'sees'
+# this kind of notion of what is more likely -- a decay and new infection or absence due to sensitivity
+
+# posterior of both infections does not cover the true timing
+# challenges of multiple haplotypes getting false negatives at the same sampling
+# I guess this is more likely than only 1? due to issues with amplification perhaps?
+mcmc_sees(filter_cohort(sim_2_3.5, 5)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_3.5, 5)) + theme(legend.position = "bottom")
+
+# what about when sensitivity is perfect
+sim_2_perfect <- readRDS("~/code/GLAM-test/simulated_data/sensitivity/cohort_2_inf_1_sens.RDS")
+mcmc_sees(filter_cohort(sim_2_perfect, 8)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_perfect, 8)) + theme(legend.position = "bottom")
+
+# I don't know what caused it to struggle here 
+mcmc_sees(filter_cohort(sim_2_perfect, 9)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_perfect, 9)) + theme(legend.position = "bottom")
