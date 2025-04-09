@@ -8,6 +8,12 @@
 # test how well the MCMC works on cohorts with the same n_inf
 source("functions.R")
 
+# set parameters of the MCMC process
+burnin_iterations <- 1e3
+sampling_iterations <- 5e3
+num_chains <- 1
+num_rungs <- 1
+
 n_inf <- seq(1:20)
 
 for(i in n_inf) {
@@ -34,13 +40,13 @@ for(i in n_inf) {
          n_infections = mapply(function(x) length(x$t_inf), sim$raw_list),
          infection_times = NULL,
          max_infections = 20,
-         chains = 1, rungs = 1)
+         chains = num_chains, rungs = num_rungs)
   
   # run burn-in and sampling
-  g$burn(iterations = 1e3) |>
+  g$burn(iterations = burnin_iterations) |>
     system.time()
   
-  g$sample(iterations = 5e3) |>
+  g$sample(iterations = sampling_iterations)  |>
     system.time()
   
   # -----------------------
@@ -123,13 +129,13 @@ for(i in n_inf) {
            n_infections = mapply(function(x) length(x$t_inf), sim$raw_list),
            infection_times = NULL,
            max_infections = 20,
-           chains = 1, rungs = 1)
+           chains = num_chains, rungs = num_rungs)
     
     # run burn-in and sampling
-    g$burn(iterations = 1e3) |>
+    g$burn(iterations = burnin_iterations) |>
       system.time()
     
-    g$sample(iterations = 5e3) |>
+    g$sample(iterations = sampling_iterations)  |>
       system.time()
     
     # -----------------------
@@ -211,13 +217,13 @@ for(i in n_inf) {
            n_infections = mapply(function(x) length(x$t_inf), sim$raw_list),
            infection_times = NULL,
            max_infections = 20,
-           chains = 1, rungs = 1)
+           chains = num_chains, rungs = num_rungs)
     
     # run burn-in and sampling
-    g$burn(iterations = 1e3) |>
+    g$burn(iterations = burnin_iterations) |>
       system.time()
     
-    g$sample(iterations = 5e3) |>
+    g$sample(iterations = sampling_iterations)  |>
       system.time()
     
     # -----------------------
