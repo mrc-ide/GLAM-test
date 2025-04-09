@@ -20,6 +20,8 @@
 # - Collinearity between specific parameters where they are likely to create a 
 #   gradient given the likelihood and other factors? (~ shape and scale in some 
 #   distributions)
+# - How to deal with the fact that you may have multiple infections between sampling?
+#   Is part of the issue fixing the # infections in this circumstance?
 
 # installation for testing of specified version of {GLAM}
 # devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
@@ -88,4 +90,23 @@ for(i in n_inf) {
   }
 }
 
-
+theta_vec <- c(seq(0.1, 1, 0.1), seq(1.5, 5, 0.5))
+for(i in n_inf) {
+  for(j in theta_vec) {  
+    print(paste0("Simulate cohort with ", i, " infections and ", j, " COI parameter"))
+    samp_time <- seq(0, max_time, 1)
+    sim <- sim_cohort(n = cohort_size,
+                      samp_time = samp_time,
+                      haplo_freqs = haplo_freqs,
+                      lambda = i/max_time,
+                      theta = j,
+                      decay_rate = decay_rate,
+                      sens = sens,
+                      n_inf = rep(i, cohort_size),
+                      return_full = TRUE)
+    
+    # save so easily accessible in the local environment
+    assign(paste0("n_",i,"_",j), sim)
+    saveRDS(sim, paste0("simulated_data/coi/cohort_",i,"_inf_",j,"_coi.RDS"))
+  }
+}
