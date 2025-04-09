@@ -277,12 +277,69 @@ for(i in n_inf) {
 }
 
 
+### ----  EXPLORE WHEN MCMC SUCCEEDS AND FAILS ---- OMIT WHEN GLAM WORKS ---- ###
 
 # look at specific output
-n_8 <- readRDS("~/code/GLAM-test/simulated_data/cohort_n_infections/cohort_8_infections.RDS")
-# challenge of two infections between sampling and then add in imperfect sensitivity and 
-# it gets very complicated
-plot_ind(filter_cohort(n_8, 10))
+# systematically look at individuals where the MCMC succeeds and fails to see if there is somethings connecting them
+# successes
+sim_1_0.1 <- readRDS("~/code/GLAM-test/simulated_data/coi/cohort_1_inf_0.1_coi.RDS")
+mcmc_sees(filter_cohort(sim_1_0.1, 7)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_1_0.1, 7)) + theme(legend.position = "bottom")
+mcmc_sees(filter_cohort(sim_1_0.1, 1)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_1_0.1, 1)) + theme(legend.position = "bottom")
 
-# even with perfect sensitivity the MCMC struggles
-plot_ind(filter_cohort(n_5_1, 7))
+# fails
+# infected between 6 and 7 -- posteriof implies very early on in sampling
+mcmc_sees(filter_cohort(sim_1_0.1, 4)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_1_0.1, 4)) + theme(legend.position = "bottom")
+
+# identifies an infection well after the haplotype infected has decayed
+mcmc_sees(filter_cohort(sim_1_0.1, 8)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_1_0.1, 8)) + theme(legend.position = "bottom")
+
+# here, the posterior distribution is > 0 above true_inf and == 0 below 
+mcmc_sees(filter_cohort(sim_1_0.1, 10)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_1_0.1, 10)) + theme(legend.position = "bottom")
+
+# now with more infections
+sim_2_0.1 <- readRDS("~/code/GLAM-test/simulated_data/coi/cohort_2_inf_0.1_coi.RDS")
+
+# individual 7 succeeds for infection 1 and fails for 2 
+# honestly, totally sensible here!
+mcmc_sees(filter_cohort(sim_2_0.1, 7)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.1, 7)) + theme(legend.position = "bottom")
+
+# again, also looks sensible here
+mcmc_sees(filter_cohort(sim_2_0.1, 1)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.1, 1)) + theme(legend.position = "bottom")
+
+# mistake #2 as #1 
+# eyeballing I think it's fairly obvious
+# is there something wrong with the likelihood that the absense of a positive for two sampling and then a positive
+# is more likely than being infected later? (posterior: inf 1 ~ 0.2, inf 2 ~ 1.5 (actually when # 1 happened))
+mcmc_sees(filter_cohort(sim_2_0.1, 6)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.1, 6)) + theme(legend.position = "bottom")
+
+# flattish posterior for infection #1
+# again, pretty obvious when the first infection is 
+mcmc_sees(filter_cohort(sim_2_0.1, 2)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.1, 2)) + theme(legend.position = "bottom")
+
+# when both succeed in fitting
+sim_2_0.3 <- readRDS("~/code/GLAM-test/simulated_data/coi/cohort_2_inf_0.3_coi.RDS")
+mcmc_sees(filter_cohort(sim_2_0.3, 1)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.3, 1)) + theme(legend.position = "bottom")
+
+sim_2_0.5 <- readRDS("~/code/GLAM-test/simulated_data/coi/cohort_2_inf_0.5_coi.RDS")
+mcmc_sees(filter_cohort(sim_2_0.5, 1)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_0.5, 1)) + theme(legend.position = "bottom")
+
+sim_2_3.5 <- readRDS("~/code/GLAM-test/simulated_data/coi/cohort_2_inf_3.5_coi.RDS")
+mcmc_sees(filter_cohort(sim_2_3.5, 8)) + theme(legend.position = "bottom")
+plot_ind(filter_cohort(sim_2_3.5, 8)) + theme(legend.position = "bottom")
+
+##  reflections: how much of being able to "eyeball" when the timing should be is due to 
+#   knowing the number of infections --> this is also inherently (in these simulations) related to 
+#   the value of lambda i.e. transmission intensity. 
+#   i.e. in this last example, you could estimate potentially 5/6 distinct infections based on what 
+#   the MCMC 'sees'

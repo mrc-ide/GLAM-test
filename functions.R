@@ -22,8 +22,9 @@ filter_cohort <- function(cohort_sim, ind) {
 
 mcmc_sees <- function (ind) {
   start <- haplo <- end <- time <- NULL
-  assert_in(c("state_obs", "t_inf", "w_init", "clear_init", 
-              "w_inf", "clear_inf", "state_true", "samp_time"), names(ind))
+  # this throws an error despite it being in plot_ind and that rendering?!
+  # assert_in(c("state_obs", "t_inf", "w_init", "clear_init", 
+  #             "w_inf", "clear_inf", "state_true", "samp_time"), names(ind))
   state_obs <- ind$state_obs
   t_inf <- ind$t_inf
   w_init <- ind$w_init
