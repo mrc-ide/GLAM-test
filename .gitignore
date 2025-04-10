@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-/R_scripts
-/mcmc_outputs
-/data
+R_scripts/
+mcmc_outputs/
+data/
 lookup.RDS

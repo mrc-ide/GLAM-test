@@ -28,7 +28,7 @@ haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
 theta_vec <- c(seq(0.1, 0.5, 0.1), seq(1, 5, 0.5))
 decay_vec <- c(seq(0.1, 1, 0.1))
 sens <- 1
-n_inf <- 1:3
+n_inf <- 1:10
 cohort_size <- 10
 repetitions <- 10
 
@@ -52,9 +52,18 @@ lookup <-
   dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 9)) # generate a simulation id number
 saveRDS(lookup, "simple/lookup.RDS")
 
+
+# set seed to ensure reproducibility
+set.seed(2)
+# benchmark it 
+start <- Sys.time()
 # generate the simulated datasets
 for (i in 1:nrow(lookup)) {
   id <- lookup$sim_id[i]
+  # print output so that it's easy to keep track of how much is complete
+  if(i %% 200 == 0) {
+    print(paste("Simulating parameter id set", i, "of", nrow(lookup)))
+  }
   samp_time <- unlist(lookup$samp_time[i])
   n_inf <- lookup$n[i]
   
@@ -77,6 +86,6 @@ for (i in 1:nrow(lookup)) {
     )
   saveRDS(sim, paste0("simple/data/sim", id, ".RDS"))
 }
-
+Sys.time() - start
 
 
