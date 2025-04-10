@@ -72,7 +72,6 @@ zero_pad_fixed <- function(num, places) {
 }
 
 
-
 # # test functions
 # # set simulation parameters
 # samp_time <- seq(0, 10, 1)
