@@ -66,6 +66,10 @@ mcmc_sees <- function (ind) {
     theme(panel.grid = element_blank())
 }
 
+# Function to zero-pad integer ensuring fixed length
+zero_pad_fixed <- function(num, places) {
+  sprintf(paste0("%0", places, "d"), as.integer(num))
+}
 
 # # test functions
 # # set simulation parameters
