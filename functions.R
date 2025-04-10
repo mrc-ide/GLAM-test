@@ -46,7 +46,7 @@ mcmc_sees <- function (ind) {
                                                         t_inf)[w_inf == 1], end = clear_inf[w_inf == 1], 
                                              haplo = which(w_inf == 1, arr.ind = TRUE)[, 2]))
   }
-
+  
   df_plot <- mutate(data.frame(time = samp_time, 
                                haplo = rep(1:n_haplo, each = n_samp), 
                                state_true = c("Absent", "Present")[state_true + 1], 
@@ -65,6 +65,12 @@ mcmc_sees <- function (ind) {
     ylim(c(1, n_haplo)) + 
     theme(panel.grid = element_blank())
 }
+
+# Function to zero-pad integer ensuring fixed length
+zero_pad_fixed <- function(num, places) {
+  sprintf(paste0("%0", places, "d"), as.integer(num))
+}
+
 
 
 # # test functions
