@@ -33,7 +33,7 @@ sens <- 1
 n_inf <- 1:10
 cohort_size <- 10
 repetitions <- 100 # set repetitions to be 100 so we can test how often MCMC 
-        # returns true parameters
+# returns true parameters
 
 # estimating necessary zero padding -- use 9 digits 
 # 1*1*1*14*10*5*10*2*100
@@ -42,16 +42,16 @@ repetitions <- 100 # set repetitions to be 100 so we can test how often MCMC
 lookup <- 
   # start with cycling over the vectors
   tidyr::expand_grid(theta = theta_vec, 
-                             decay = decay_vec, 
-                             n = n_inf,
-                             repetition = 1:repetitions)|>
+                     decay = decay_vec, 
+                     n = n_inf,
+                     repetition = 1:repetitions)|>
   dplyr::mutate(lambda = n/max(samp_time),
                 samp_time = list(samp_time),
                 haplo_freqs = list(haplo_freqs),
                 sens = sens,
                 cohort_size = cohort_size) |>
   dplyr::select(cohort_size, samp_time, haplo_freqs, lambda,
-                  theta, decay, sens, n, repetition) |>
+                theta, decay, sens, n, repetition) |>
   dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 9)) # generate a simulation id number
 saveRDS(lookup, "simple/lookup.RDS")
 
@@ -64,7 +64,7 @@ start <- Sys.time()
 for (i in 1:nrow(lookup)) {
   id <- lookup$sim_id[i]
   # print output so that it's easy to keep track of how much is complete
-  if(i %% 200 == 0) {
+  if(i %% 1000 == 0) {
     print(paste("Simulating parameter id set", i, "of", nrow(lookup)))
   }
   samp_time <- unlist(lookup$samp_time[i])
@@ -86,7 +86,7 @@ for (i in 1:nrow(lookup)) {
     decay_rate = lookup$decay[i],
     sens = lookup$sens[i],
     n_inf = rep(n_inf, lookup$cohort_size[i])
-    )
+  )
   saveRDS(sim, paste0("simple/data/sim", id, ".RDS"))
 }
 Sys.time() - start
