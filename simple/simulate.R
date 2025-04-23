@@ -10,6 +10,8 @@ set.seed(2)
 source("functions.R")
 
 # installation for testing of specified version of {GLAM} - SHA1 (c9cdc36f)
+# this specific version does not allow me to set t_inf 
+# when GLAM is updated, update this so that we manually set t_inf
 # devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
 library(GLAM)
 
@@ -30,7 +32,8 @@ decay_vec <- c(seq(0.1, 1, 0.1))
 sens <- 1
 n_inf <- 1:10
 cohort_size <- 10
-repetitions <- 10
+repetitions <- 100 # set repetitions to be 100 so we can test how often MCMC 
+        # returns true parameters
 
 # estimating necessary zero padding -- use 9 digits 
 # 1*1*1*14*10*5*10*2*100
