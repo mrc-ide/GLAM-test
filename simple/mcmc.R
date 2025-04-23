@@ -19,8 +19,8 @@ source("functions.R")
 lookup <- readRDS("simple/lookup.RDS")
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
-burnin_iterations <- 1e2
-sampling_iterations <- 5e2
+burnin_iterations <- 1e3
+sampling_iterations <- 5e3
 num_chains <- 1
 num_rungs <- 1
 
@@ -30,9 +30,9 @@ samp_time <- seq(0, 10, 1) # keep the same for all in this case
 haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
 theta_val <- 2
 decay_val <- 0.1
-lambda_val <- 1/10 # set to n_inf/max(samp_time)
 sens <- 1
-n_inf <- 1
+n_inf <- 2
+lambda_val <- n_inf/max(samp_time) # set to n_inf/max(samp_time)
 cohort_size <- 10
 
 # need to update when we have multiple samp_time to ensure that we filter by this
@@ -44,6 +44,10 @@ sim_ids <- lookup |>
                 n == n_inf,
                 cohort_size == cohort_size) |>
   dplyr::pull(sim_id)
+
+if(length(sim_ids) == 0) {
+  stop("Parameter value set does not exist in the lookup table")
+}
 
 for (i in 1:nrow(sim_ids)) {
   id <- sim_ids[i]
@@ -61,6 +65,7 @@ for (i in 1:nrow(sim_ids)) {
          haplo_freqs = haplo_freqs,
          theta = theta_val,
          decay_rate = decay_val,
+         lambda = lambda_val,
          sens = sens,
          n_infections = mapply(function(x) length(x$t_inf), sim$raw_list),
          infection_times = NULL,
@@ -78,6 +83,42 @@ for (i in 1:nrow(sim_ids)) {
   saveRDS(g, paste0("simple/mcmc_outputs/out", id,".RDS"))
   
   # summary outputs
+  # have queried Bob for what outputs would be helpful 
+  # current thoughts:
+  # credible intervals of the posterior of each parameter
+  # credible intervals of the posterior of each infection time
+  # dataframe showing whether the true parameter value is within the CrI for all params matching the defined set
+  # dataframe showing whether the true infection time is within the CrI 
+  
+  # somewhat redundant at the moment b/c we fix the parameter values
+  param_cri <- g$get_output_global() |>
+    dplyr::filter(phase == "sampling") |> 
+    tidyr::pivot_longer(lambda:sens, names_to = "parameter") |>
+    dplyr::select(parameter, value) |>
+    dplyr::group_by(parameter) |>
+    dplyr::reframe(lower_cri = quantile(value, 0.025), 
+                   upper_cri = quantile(value, 0.975),
+                   mean = mean(value),
+                   median = median(value))
+  
+  # infection time is static for some reason
+  t_inf_cri <- g$get_output_infection_times() |> 
+    dplyr::filter(phase == "sampling") |> 
+    dplyr::group_by(individual, infection) |>
+    dplyr::reframe(lower_cri = quantile(value, 0.025), 
+                   upper_cri = quantile(value, 0.975))
+  
+  # real times of infection
+  df_inf_time_true <- mapply(function(i) {
+    t <- sim$raw_list[[i]]$t_inf
+    if (length(t) == 0) {
+      return(NULL)
+    }
+    data.frame(individual = i,
+               infection = seq_along(t),
+               time = t)
+  }, seq_along(sim$raw_list), SIMPLIFY = FALSE) |>
+    bind_rows()
   
   
 }

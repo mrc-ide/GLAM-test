@@ -85,7 +85,8 @@ for (i in 1:nrow(lookup)) {
     lambda = lookup$lambda[i],
     decay_rate = lookup$decay[i],
     sens = lookup$sens[i],
-    n_inf = rep(n_inf, lookup$cohort_size[i])
+    n_inf = rep(n_inf, lookup$cohort_size[i]),
+    return_full = TRUE
   )
   saveRDS(sim, paste0("simple/data/sim", id, ".RDS"))
 }
