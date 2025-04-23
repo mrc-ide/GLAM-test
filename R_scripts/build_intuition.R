@@ -257,6 +257,7 @@ theta <- 2
 
 # defining lambda and n_inf together - do weird things happen if the n_inf
 # doesn't make sense within the context of lambda?
+# n_inf overrides the effect
 
 sim1 <- sim_ind(samp_time = samp_time,
                 haplo_freqs = haplo_freqs,
