@@ -1,0 +1,10 @@
+# Also use the ncov-ic universe
+repo::https://ncov-ic.r-universe.dev
+
+# Specific version of GLAM, via tag to the specific commit
+mrc-ide/GLAM@b2c3e62
+
+# Package from CRAN
+tidyverse
+ggplot2
+ggpubr
