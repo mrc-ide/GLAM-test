@@ -1,8 +1,5 @@
-# Also use the ncov-ic universe
-repo::https://ncov-ic.r-universe.dev
-
-# Specific version of GLAM, via tag to the specific commit
-mrc-ide/GLAM@b2c3e62
+# Latest version of GLAM, via tag to the specific commit
+mrc-ide/GLAM@1e2e396
 
 # Package from CRAN
 tidyverse
