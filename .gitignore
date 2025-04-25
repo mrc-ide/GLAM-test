@@ -5,4 +5,4 @@
 R_scripts/
 mcmc_outputs/
 data/
-lookup.RDS
+summary/

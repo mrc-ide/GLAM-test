@@ -19,8 +19,8 @@ source("functions.R")
 lookup <- readRDS("simple/lookup.RDS")
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
-burnin_iterations <- 1e3
-sampling_iterations <- 5e3
+burnin_iterations <- 1e2
+sampling_iterations <- 5e2
 num_chains <- 1
 num_rungs <- 1
 
@@ -49,7 +49,14 @@ if(length(sim_ids) == 0) {
   stop("Parameter value set does not exist in the lookup table")
 }
 
-for (i in 1:nrow(sim_ids)) {
+# create a stop message for if the parameter value set exists but the simulation doesn't
+
+# I think this still needs a lot of work. Check with Bob if this is even the approach we want
+# I was imagining having this as a way of checking all reps with the same parameter set 
+# And extracting some information about the sensitiviy of the MCMC in detecting the true values
+# Outputs are organised in subfolders with the same id ref so it's easy to pull in everything together
+
+for (i in 1:length(sim_ids)) {
   id <- sim_ids[i]
   sim <- readRDS(paste0("simple/data/sim", id, ".RDS"))
   
@@ -99,7 +106,9 @@ for (i in 1:nrow(sim_ids)) {
     dplyr::reframe(lower_cri = quantile(value, 0.025), 
                    upper_cri = quantile(value, 0.975),
                    mean = mean(value),
-                   median = median(value))
+                   median = median(value)) |>
+    dplyr::mutate(repetition = lookup$repetition[which(lookup$sim_id == id)])
+  saveRDS(param_cri, paste0("simple/summary/metrics/param_cri/cri", id, ".RDS"))
   
   # infection time is static for some reason
   t_inf_cri <- g$get_output_infection_times() |> 
@@ -107,6 +116,7 @@ for (i in 1:nrow(sim_ids)) {
     dplyr::group_by(individual, infection) |>
     dplyr::reframe(lower_cri = quantile(value, 0.025), 
                    upper_cri = quantile(value, 0.975))
+  saveRDS(t_inf_cri, paste0("simple/summary/metrics/t_inf_cri/cri", id, ".RDS"))
   
   # real times of infection
   df_inf_time_true <- mapply(function(i) {
