@@ -49,14 +49,15 @@ for (i in 1:nrow(lookup)) {
   g$init(start_time = 0,
          end_time = 10,
          haplo_freqs = haplo_freqs,
-         theta = theta_val,
-         decay_rate = decay_val,
-         lambda = lambda_val,
-         sens = sens,
-         n_infections = mapply(function(x) length(x$t_inf), sim$raw_list),
+         theta = NULL,
+         decay_rate = NULL,
+         lambda = NULL,
+         sens = NULL,
+         n_infections = NULL,
          infection_times = NULL,
          max_infections = 20,
-         chains = num_chains, rungs = num_rungs)
+         chains = num_chains, 
+         rungs = num_rungs)
   
   # run burn-in and sampling
   g$burn(iterations = burnin_iterations) |>
