@@ -9,10 +9,8 @@ set.seed(2)
 # source functions
 source("functions.R")
 
-# installation for testing of specified version of {GLAM} - SHA1 (c9cdc36f)
-# this specific version does not allow me to set t_inf 
-# when GLAM is updated, update this so that we manually set t_inf
-# devtools::install_github("mrc-ide/GLAM@test/gina_working_example")
+# installation for testing of specified version of {GLAM} - update from 24 Apr which now works
+# devtools::install_github("mrc-ide/GLAM@1e2e396")
 library(GLAM)
 
 # load libraries
@@ -62,6 +60,8 @@ set.seed(2)
 start <- Sys.time()
 # generate the simulated datasets
 for (i in 1:nrow(lookup)) {
+  # set seed so that it's easy to resimulate specific sets
+  set.seed(lookup$repetition[i])
   id <- lookup$sim_id[i]
   # print output so that it's easy to keep track of how much is complete
   if(i %% 1000 == 0) {
@@ -69,13 +69,7 @@ for (i in 1:nrow(lookup)) {
   }
   samp_time <- unlist(lookup$samp_time[i])
   n_inf <- lookup$n[i]
-  
-  # must be a better way of imputing t_inf with multiple options 
-  # this is the case where they are equally spaced
-  # t_inf <- seq(from = max(samp_time)/(n_inf+1),
-  #              by = max(samp_time)/(n_inf+1),
-  #              length.out = n_inf) - 0.3 # stagger to be sure that it isn't at same time as sampling
-  # 
+
   # simulate the cohort corresponding to the parameter values
   sim <- GLAM::sim_cohort(
     n = lookup$cohort_size[i],
@@ -91,5 +85,3 @@ for (i in 1:nrow(lookup)) {
   saveRDS(sim, paste0("simple/data/sim", id, ".RDS"))
 }
 Sys.time() - start
-
-
