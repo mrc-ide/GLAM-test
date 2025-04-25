@@ -28,15 +28,14 @@ sampling_iterations <- 1e3
 num_chains <- 1
 num_rungs <- 1
 
-lookup <- readRDS("simple/lookup.RDS")
-
-# I think this still needs a lot of work. Check with Bob if this is even the approach we want
-# I was imagining having this as a way of checking all reps with the same parameter set 
-# And extracting some information about the sensitiviy of the MCMC in detecting the true values
-# Outputs are organised in subfolders with the same id ref so it's easy to pull in everything together
-
+# Loops over every row of the lookup table and runs the MCMC and saves the output
+# start <- Sys.time()
 for (i in 1:nrow(lookup)) {
   set.seed(i)
+  # for now, print out the progress so that I can see how far through we are
+  if(i %% 10 == 0) {
+    print(paste("MCMC on simulation set", i))
+  }
   id <- lookup$sim_id[i]
   sim <- readRDS(paste0("simple/data/sim", id, ".RDS"))
   
@@ -68,8 +67,6 @@ for (i in 1:nrow(lookup)) {
   
   # save output
   saveRDS(g, paste0("simple/mcmc_outputs/out", id,".RDS"))
-  
-  
 }
-
+# Sys.time() - start
 
