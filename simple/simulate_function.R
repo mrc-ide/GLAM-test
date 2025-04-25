@@ -4,10 +4,10 @@
 # Purpose: A functional form of simulate.R to enable cluster integration
 
 # libraries are loaded and lookup.RDS is read in as dependencies
-
 # function of i where i is a row of lookup.RDS
 
 simulate_data <- function(i) {
+  set.seed(i)
   samp_time <- unlist(lookup$samp_time[i])
   n_inf <- lookup$n[i]
   id <- lookup$sim_id[i]
