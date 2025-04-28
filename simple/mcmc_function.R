@@ -7,10 +7,15 @@
 # function of i where i is a row of lookup.RDS
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
+lookup <- readRDS("simple/lookup.RDS")
+
 burnin_iterations <- 1e2
 sampling_iterations <- 5e2
 num_chains <- 1
 num_rungs <- 1
+
+# fix haplo freqs 
+haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
 
 mcmc_fitting <- function(i) { 
   set.seed(i)
@@ -18,7 +23,7 @@ mcmc_fitting <- function(i) {
   sim <- readRDS(paste0("simple/data/sim", id, ".RDS"))
   
   # create a new MCMC object and load data
-  g <- glam_mcmc$new(df_data = sim$df_data)
+  g <- GLAM::glam_mcmc$new(df_data = sim$df_data)
   
   # initialize. If parameters are set to NULL, they are estimated. If they are
   # given a value, they take this fixed value. Useful for giving the inference

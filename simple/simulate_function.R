@@ -6,6 +6,8 @@
 # libraries are loaded and lookup.RDS is read in as dependencies
 # function of i where i is a row of lookup.RDS
 
+lookup <- readRDS("simple/lookup.RDS")
+
 simulate_data <- function(i) {
   set.seed(i)
   samp_time <- unlist(lookup$samp_time[i])

@@ -23,10 +23,11 @@ source("functions.R")
 lookup <- readRDS("simple/lookup.RDS")
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
-burnin_iterations <- 1e2
-sampling_iterations <- 1e3
+burnin_iterations <- 1e3
+sampling_iterations <- 1e4
 num_chains <- 1
 num_rungs <- 1
+
 
 # Loops over every row of the lookup table and runs the MCMC and saves the output
 # start <- Sys.time()
