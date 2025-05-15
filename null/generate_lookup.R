@@ -15,7 +15,7 @@ haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
 theta_vec <- c(0.5, 1, 2, 3, 4)
 decay_vec <- c(0.01,0.1,0.3)
 sens <- 1
-n_inf <- 1:5
+n_inf <- NULL
 cohort_size <- 10
 repetitions <- 10 # set repetitions to be 100 so we can test how often MCMC 
 # returns true parameters
@@ -25,14 +25,12 @@ lookup <-
   # start with cycling over the vectors
   tidyr::expand_grid(theta = theta_vec, 
                      decay = decay_vec, 
-                     n = n_inf,
-                     repetition = 1:repetitions)|>
-  dplyr::mutate(lambda = n/max(samp_time),
-                samp_time = list(samp_time),
+                     repetition = 1:repetitions) |>
+  dplyr::mutate(samp_time = list(samp_time),
                 haplo_freqs = list(haplo_freqs),
                 sens = sens,
                 cohort_size = cohort_size) |>
-  dplyr::select(cohort_size, samp_time, haplo_freqs, lambda,
-                theta, decay, sens, n, repetition) |>
-  dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 9)) # generate a simulation id number
-saveRDS(lookup, "simple/lookup.RDS")
+  dplyr::select(cohort_size, samp_time, haplo_freqs, 
+                theta, decay, sens, repetition) |>
+  dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 5)) # generate a simulation id number
+saveRDS(lookup, "null/lookup_null.RDS")

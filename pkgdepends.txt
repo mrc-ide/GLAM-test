@@ -3,5 +3,3 @@ mrc-ide/GLAM@1e2e396
 
 # Package from CRAN
 tidyverse
-ggplot2
-ggpubr

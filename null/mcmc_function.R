@@ -3,11 +3,11 @@
 # Date: 2025-04-25
 # Purpose: A functional form of mcmc.R to enable cluster integration
 
-# libraries are loaded and lookup.RDS is read in as dependencies
-# function of i where i is a row of lookup.RDS
+# libraries are loaded and lookup_null.RDS is read in as dependencies
+# function of i where i is a row of lookup_null.RDS
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
-lookup <- readRDS("simple/lookup.RDS")
+lookup_null <- readRDS("null/lookup_null.RDS")
 
 burnin_iterations <- 1e2
 sampling_iterations <- 5e2
@@ -17,10 +17,10 @@ num_rungs <- 1
 # fix haplo freqs 
 haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
 
-mcmc_fitting <- function(i) { 
+mcmc_fitting_null <- function(i) { 
   set.seed(i)
-  id <- lookup$sim_id[i]
-  sim <- readRDS(paste0("simple/data/sim", id, ".RDS"))
+  id <- lookup_null$sim_id[i]
+  sim <- readRDS(paste0("null/data/sim", id, ".RDS"))
   
   # create a new MCMC object and load data
   g <- GLAM::glam_mcmc$new(df_data = sim$df_data)
@@ -50,12 +50,12 @@ mcmc_fitting <- function(i) {
     system.time()
   
   # save output
-  saveRDS(g, paste0("simple/mcmc_outputs/out", id,".RDS"))
+  saveRDS(g, paste0("null/mcmc_outputs/out", id,".RDS"))
 }
 
 # create a function to fit a block of simulations with defined size
-mcmc_fitting_block <- function(block_num, block_size) {
+mcmc_fitting_block_null <- function(block_num, block_size) {
   iterations <- seq(((block_num-1) * block_size)+1, block_num*block_size)
   
-  lapply(iterations, mcmc_fitting)
+  lapply(iterations, mcmc_fitting_null)
 }

@@ -29,3 +29,10 @@ simulate_data <- function(i) {
   saveRDS(sim, paste0("simple/data/sim", id, ".RDS"))
   
 }
+
+# create a function to run a block of simulations with defined size
+simulate_block <- function(block_num, block_size) {
+  iterations <- seq(((block_num-1) * block_size)+1, block_num*block_size)
+  
+  lapply(iterations, simulate_data)
+}
