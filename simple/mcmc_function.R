@@ -12,10 +12,17 @@ lookup <- readRDS("simple/lookup.RDS")
 burnin_iterations <- 1e2
 sampling_iterations <- 5e2
 num_chains <- 1
-num_rungs <- 1
+
+# set priors for all of the mcmc fittings
+# define priors
+lambda_prior <- function(x) dlnorm_reparam(x, mean = 0.5, sd = 0.2, return_log = TRUE)
+theta_prior <- function(x) dlnorm_reparam(x, mean = 3, sd = 3, return_log = TRUE)
+decay_rate_prior <- function(x) dlnorm_reparam(x, mean = 0.5, sd = 0.2, return_log = TRUE)
+sens_prior <- function(x) dbeta(x, shape1 = 99, shape2 = 1, log = TRUE)
 
 # fix haplo freqs 
 haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
+max_infections <- 20
 
 mcmc_fitting <- function(i) { 
   set.seed(i)
@@ -29,18 +36,13 @@ mcmc_fitting <- function(i) {
   # given a value, they take this fixed value. Useful for giving the inference
   # method the correct true value of some parameters, to diagnose how well it
   # estimates others.
-  g$init(start_time = 0,
-         end_time = 10,
+  g$init(lambda_prior = lambda_prior,
+         theta_prior = theta_prior,
+         decay_rate_prior = decay_rate_prior,
+         sens_prior = sens_prior,
          haplo_freqs = haplo_freqs,
-         theta = NULL,
-         decay_rate = NULL,
-         lambda = NULL,
-         sens = NULL,
-         n_infections = NULL,
-         infection_times = NULL,
-         max_infections = 20,
-         chains = num_chains, 
-         rungs = num_rungs)
+         chains = num_chains,
+         max_infections = max_infections)
   
   # run burn-in and sampling
   g$burn(iterations = burnin_iterations) |>

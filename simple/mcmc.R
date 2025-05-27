@@ -23,11 +23,20 @@ source("functions.R")
 lookup <- readRDS("simple/lookup.RDS")
 
 # set parameters of the MCMC process -- increase these once we have working {glam}
-burnin_iterations <- 1e3
-sampling_iterations <- 1e4
+burnin_iterations <- 1e2
+sampling_iterations <- 1e3
 num_chains <- 1
-num_rungs <- 1
 
+# set priors for all of the mcmc fittings
+# define priors
+lambda_prior <- function(x) dlnorm_reparam(x, mean = 0.5, sd = 0.2, return_log = TRUE)
+theta_prior <- function(x) dlnorm_reparam(x, mean = 3, sd = 3, return_log = TRUE)
+decay_rate_prior <- function(x) dlnorm_reparam(x, mean = 0.5, sd = 0.2, return_log = TRUE)
+sens_prior <- function(x) dbeta(x, shape1 = 99, shape2 = 1, log = TRUE)
+
+# fixed parameters for all models
+haplo_freqs <- rep(0.05, 20) # equal frequency of all haplotypes
+max_infections <- 20
 
 # Loops over every row of the lookup table and runs the MCMC and saves the output
 # start <- Sys.time()
@@ -41,24 +50,35 @@ for (i in 1:nrow(lookup)) {
   sim <- readRDS(paste0("simple/data/sim", id, ".RDS"))
   
   # create a new MCMC object and load data
-  g <- glam_mcmc$new(df_data = sim$df_data)
+  g <- GLAM::glam_mcmc$new(df_data = sim$df_data)
   
   # initialize. If parameters are set to NULL, they are estimated. If they are
   # given a value, they take this fixed value. Useful for giving the inference
   # method the correct true value of some parameters, to diagnose how well it
-  # estimates others.
-  g$init(start_time = 0,
-         end_time = 10,
+  # # estimates others.
+  # before the GLAM updates
+  # now missing rungs, start and end times and I think unspecified parameters
+  # are just assumed NULL...
+  # g$init(start_time = 0,
+  #        end_time = 10,
+  #        haplo_freqs = haplo_freqs,
+  #        theta = NULL,
+  #        decay_rate = NULL,
+  #        lambda = NULL,
+  #        sens = NULL,
+  #        n_infections = NULL,
+  #        infection_times = NULL,
+  #        max_infections = 20,
+  #        chains = num_chains, 
+  #        rungs = num_rungs)
+  # copied from GLAM/R_scripts/deploy.R
+  g$init(lambda_prior = lambda_prior,
+         theta_prior = theta_prior,
+         decay_rate_prior = decay_rate_prior,
+         sens_prior = sens_prior,
          haplo_freqs = haplo_freqs,
-         theta = NULL,
-         decay_rate = NULL,
-         lambda = NULL,
-         sens = NULL,
-         n_infections = NULL,
-         infection_times = NULL,
-         max_infections = 20,
-         chains = num_chains, 
-         rungs = num_rungs)
+         chains = num_chains,
+         max_infections = max_infections)
   
   # run burn-in and sampling
   g$burn(iterations = burnin_iterations) |>
