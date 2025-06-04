@@ -34,5 +34,5 @@ lookup <-
                 cohort_size = cohort_size) |>
   dplyr::select(cohort_size, samp_time, haplo_freqs, lambda,
                 theta, decay, sens, n, repetition) |>
-  dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 9)) # generate a simulation id number
+  dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 5)) # generate a simulation id number
 saveRDS(lookup, "simple/lookup.RDS")

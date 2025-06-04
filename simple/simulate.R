@@ -33,26 +33,7 @@ cohort_size <- 10
 repetitions <- 100 # set repetitions to be 100 so we can test how often MCMC 
 # returns true parameters
 
-# estimating necessary zero padding -- use 9 digits 
-# 1*1*1*14*10*5*10*2*100
-
-# generate a lookup table with all the parameter values
-lookup <- 
-  # start with cycling over the vectors
-  tidyr::expand_grid(theta = theta_vec, 
-                     decay = decay_vec, 
-                     n = n_inf,
-                     repetition = 1:repetitions)|>
-  dplyr::mutate(lambda = n/max(samp_time),
-                samp_time = list(samp_time),
-                haplo_freqs = list(haplo_freqs),
-                sens = sens,
-                cohort_size = cohort_size) |>
-  dplyr::select(cohort_size, samp_time, haplo_freqs, lambda,
-                theta, decay, sens, n, repetition) |>
-  dplyr::mutate(sim_id = zero_pad_fixed(row_number(), 9)) # generate a simulation id number
-saveRDS(lookup, "simple/lookup.RDS")
-
+source("simple/generate_lookup.R")
 
 # set seed to ensure reproducibility
 set.seed(2)
@@ -64,7 +45,7 @@ for (i in 1:nrow(lookup)) {
   set.seed(lookup$repetition[i])
   id <- lookup$sim_id[i]
   # print output so that it's easy to keep track of how much is complete
-  if(i %% 1000 == 0) {
+  if(i %% 100 == 0) {
     print(paste("Simulating parameter id set", i, "of", nrow(lookup)))
   }
   samp_time <- unlist(lookup$samp_time[i])

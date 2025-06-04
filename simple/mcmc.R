@@ -55,22 +55,7 @@ for (i in 1:nrow(lookup)) {
   # initialize. If parameters are set to NULL, they are estimated. If they are
   # given a value, they take this fixed value. Useful for giving the inference
   # method the correct true value of some parameters, to diagnose how well it
-  # # estimates others.
-  # before the GLAM updates
-  # now missing rungs, start and end times and I think unspecified parameters
-  # are just assumed NULL...
-  # g$init(start_time = 0,
-  #        end_time = 10,
-  #        haplo_freqs = haplo_freqs,
-  #        theta = NULL,
-  #        decay_rate = NULL,
-  #        lambda = NULL,
-  #        sens = NULL,
-  #        n_infections = NULL,
-  #        infection_times = NULL,
-  #        max_infections = 20,
-  #        chains = num_chains, 
-  #        rungs = num_rungs)
+  # estimates others.
   # copied from GLAM/R_scripts/deploy.R
   g$init(lambda_prior = lambda_prior,
          theta_prior = theta_prior,
