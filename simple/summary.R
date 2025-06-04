@@ -23,7 +23,7 @@ lookup <- readRDS("simple/lookup.RDS")
 
 # write a function that takes the row number i and outputs the posteriors
 
-posterior_summary <- function(i) {
+posterior_summary <- function(i, graphs = FALSE) {
   id <- lookup$sim_id[i]
   n_ind <- lookup$cohort_size[i]
   
@@ -96,8 +96,19 @@ posterior_summary <- function(i) {
                                     TRUE, FALSE))
   
   # t_inf is hard because sometimes there is a disconnect with the # of true inf and predicted
+  t_inf_correct <- t_inf_pred |>
+    dplyr::left_join(t_inf, by = join_by(individual, infection)) |>
+    dplyr::mutate(correct = if_else(true_val >= lower_cri & true_val <= upper_cri,
+                                    TRUE, FALSE))
   
-  
+  # make some output plots
+  if(graphs == TRUE) {
+    ggplot(param_correct) + theme_bw() + 
+      aes(y = parameter_name, x = median) + 
+      geom_point() +
+      geom_errorbar(aes(xmin = lower_cri, xmax = upper_cri)) +
+      geom_point(aes(x = true_val, col = correct), shape = 4, size = 4)
+  }
   
 }
 
