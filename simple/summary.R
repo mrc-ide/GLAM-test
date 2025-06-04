@@ -56,13 +56,16 @@ posterior_summary <- function(i) {
   
   # find the 95% CrI for all of the paraemters
   params_pred <- mcmc$get_output_global() |>
-    dplyr::filter(phase == "sampling") |>
+    dplyr::filter(phase == "sampling") |> 
+    dplyr::rename(decay = decay_rate) |>
     tidyr::pivot_longer(lambda:sens, names_to = "parameter_name") |>
     dplyr::group_by(parameter_name) |>
     dplyr::reframe(median = median(value),
                    lower_cri = quantile(value, 0.025),
                    upper_cri = quantile(value, 0.975))
   
+  # this includes even those with such low probabilities that they are not super meaningful
+  # ask BV how to proceed with these..
   t_inf_pred <- mcmc$get_output_infection_times() |> 
     dplyr::filter(phase == "sampling") |> 
     dplyr::group_by(individual, infection) |> 
@@ -76,6 +79,26 @@ posterior_summary <- function(i) {
     dplyr::reframe(median = median(value),
                    lower_cri = quantile(value, 0.025),
                    upper_cri = quantile(value, 0.975))
+  
+  # return if the values are within the real values
+  param_correct <- param_true |>
+    dplyr::filter(parameter_name != "n_inf") |>
+    dplyr::left_join(params_pred) |>
+    dplyr::mutate(correct = if_else(true_val >= lower_cri & true_val <= upper_cri,
+                                    TRUE, FALSE))
+  n_inf <- param_true |>
+    dplyr::filter(parameter_name == "n_inf") |>
+    dplyr::pull(true_val)
+  
+  n_inf_correct <- n_inf_pred |> 
+    dplyr::mutate(true_val = n_inf) |> 
+    dplyr::mutate(correct = if_else(true_val >= lower_cri & true_val <= upper_cri,
+                                    TRUE, FALSE))
+  
+  # t_inf is hard because sometimes there is a disconnect with the # of true inf and predicted
+  
+  
+  
 }
 
 
