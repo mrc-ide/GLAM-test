@@ -11,6 +11,7 @@
 # ideas for inclusion here:
 # - posterior 95% CrI for each parameter
 # - posterior 95% CrI for each infection time
+# - add some convergence diagnostics when these are available in GLAM
 # - % of the time that the MCMC estimate each of these correctly
 #   i.e. true val w/i 95% CrI
 # - Sophie's suggestions - posterior predictive check and percentile-based residuals
@@ -85,7 +86,11 @@ posterior_summary <- function(i, graphs = FALSE) {
     dplyr::filter(parameter_name != "n_inf") |>
     dplyr::left_join(params_pred) |>
     dplyr::mutate(correct = if_else(true_val >= lower_cri & true_val <= upper_cri,
-                                    TRUE, FALSE))
+                                    TRUE, FALSE)) |>
+    dplyr::mutate(correct = if_else(parameter_name == "sens",
+                                    true_val >= lower_cri & true_val <= round(upper_cri, digits = 4),
+                                    correct))
+  
   n_inf <- param_true |>
     dplyr::filter(parameter_name == "n_inf") |>
     dplyr::pull(true_val)
@@ -99,7 +104,7 @@ posterior_summary <- function(i, graphs = FALSE) {
   t_inf_correct <- t_inf_pred |>
     dplyr::left_join(t_inf, by = join_by(individual, infection)) |>
     dplyr::mutate(correct = if_else(true_val >= lower_cri & true_val <= upper_cri,
-                                    TRUE, FALSE))
+                                    TRUE, FALSE)) 
   
   # make some output plots
   if(graphs == TRUE) {
@@ -110,6 +115,13 @@ posterior_summary <- function(i, graphs = FALSE) {
       geom_point(aes(x = true_val, col = correct), shape = 4, size = 4)
   }
   
+  return(param_correct)
 }
 
+bind_param <- lapply(1:750, posterior_summary) |> bind_rows()
+param_summary <- bind_param |> 
+  dplyr::group_by(parameter_name, correct) |>
+  dplyr::reframe(prop = n()/nrow(lookup)) #|> View()
 
+ggplot(param_summary, aes(x = parameter_name, y = prop, col = correct, fill = correct)) + 
+  geom_col(position = "stack") + theme_bw() + geom_hline(yintercept = 0.9, lty = 2)
